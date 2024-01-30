@@ -28,27 +28,6 @@ generator nestjsDto {
   prettier                        = "true"
 }
 
-generator frontEndDto {
-  provider                        = "node -r ts-node/register/transpile-only src/cli.ts"
-  output                          = "../src/@generatedFrontEnd/prisma-generator-nestjs-dto"
-  outputToNestJsResourceStructure = "true"
-  flatResourceStructure           = "true"
-  exportRelationModifierClasses   = "true"
-  reExport                        = "true"
-  createDtoPrefix                 = "Create"
-  updateDtoPrefix                 = "Update"
-  dtoSuffix                       = "Dto"
-  entityPrefix                    = ""
-  entitySuffix                    = "Entity"
-  fileNamingStyle                 = "camel"
-  classValidation                 = "false"
-  classTransformer                = "false"
-  noDependencies                  = "true"
-  outputType                      = "interface"
-  definiteAssignmentAssertion     = "false"
-  prettier                        = "true"
-}
-
 model Product {
   /// @description Product ID
   id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
