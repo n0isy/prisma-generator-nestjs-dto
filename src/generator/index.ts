@@ -28,6 +28,7 @@ interface RunParam {
   entitySuffix: string;
   fileNamingStyle: NamingStyle;
   classValidation: boolean;
+  classTransformer: boolean;
   outputType: string;
   noDependencies: boolean;
   definiteAssignmentAssertion: boolean;
@@ -46,6 +47,7 @@ export const run = ({
     flatResourceStructure,
     fileNamingStyle = 'camel',
     classValidation,
+    classTransformer,
     outputType,
     noDependencies,
     definiteAssignmentAssertion,
@@ -67,6 +69,7 @@ export const run = ({
     transformFileNameCase,
     transformClassNameCase: pascal,
     classValidation,
+    classTransformer,
     outputType,
     noDependencies,
     definiteAssignmentAssertion,

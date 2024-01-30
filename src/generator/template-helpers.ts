@@ -2,6 +2,7 @@ import { DMMF } from '@prisma/generator-helper';
 import { ImportStatementParams, ParsedField } from './types';
 import { decorateApiProperty } from './api-decorator';
 import { decorateClassValidators } from './class-validator';
+import { decorateClassTransformers } from './class-transformer';
 import { isAnnotatedWith, isScalar, isType } from './field-classifiers';
 import { DTO_CAST_TYPE, DTO_TYPE_FULL_UPDATE } from './annotations';
 
@@ -98,6 +99,7 @@ interface MakeHelpersParam {
   transformClassNameCase?: (item: string) => string;
   transformFileNameCase?: (item: string) => string;
   classValidation: boolean;
+  classTransformer: boolean;
   outputType: string;
   noDependencies: boolean;
   definiteAssignmentAssertion: boolean;
@@ -114,6 +116,7 @@ export const makeHelpers = ({
   transformClassNameCase = echo,
   transformFileNameCase = echo,
   classValidation,
+  classTransformer,
   outputType,
   noDependencies,
   definiteAssignmentAssertion,
@@ -237,7 +240,7 @@ export const makeHelpers = ({
     )}`;
 
   const fieldToEntityProp = (field: ParsedField) =>
-    `${decorateApiProperty(field)}${field.name}${unless(
+    `${decorateApiProperty(field)}${decorateClassTransformers(field)}${field.name}${unless(
       field.isRequired,
       '?',
       when(definiteAssignmentAssertion, '!'),
@@ -258,6 +261,7 @@ export const makeHelpers = ({
       entityPrefix,
       entitySuffix,
       classValidation,
+      classTransformer,
       outputType,
       noDependencies,
       definiteAssignmentAssertion,

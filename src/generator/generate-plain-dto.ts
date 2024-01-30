@@ -15,6 +15,12 @@ ${t.importStatements(imports)}
 
 ${t.if(apiExtraModels.length, t.apiExtraModels(apiExtraModels))}
 export ${t.config.outputType} ${t.plainDtoName(model.name)} {
+  ${t.if(
+    t.config.classTransformer,
+    `\n  constructor(partial: Partial<${t.plainDtoName(model.name)}>) {
+    Object.assign(this, partial);
+  }\n`,
+  )}
   ${t.fieldsToEntityProps(fields)}
 }
 `;

@@ -12,6 +12,7 @@ import {
   isType,
 } from '../field-classifiers';
 import {
+  concatUniqueIntoArray,
   getRelationScalars,
   getRelativePath,
   makeImportsFromPrismaClient,
@@ -26,12 +27,14 @@ import type {
   ImportStatementParams,
   ParsedField,
   IDecorators,
+  IClassTransformer,
 } from '../types';
 import type { TemplateHelpers } from '../template-helpers';
 import {
   makeImportsFromNestjsSwagger,
   parseApiProperty,
 } from '../api-decorator';
+import { parseClassTransformers } from '../class-transformer';
 
 interface ComputeEntityParamsParam {
   model: Model;
@@ -45,6 +48,7 @@ export const computeEntityParams = ({
 }: ComputeEntityParamsParam): EntityParams => {
   const imports: ImportStatementParams[] = [];
   const apiExtraModels: string[] = [];
+  const classTransformers: IClassTransformer[] = [];
 
   const relationScalarFields = getRelationScalars(model.fields);
   const relationScalarFieldNames = Object.keys(relationScalarFields);
@@ -56,6 +60,12 @@ export const computeEntityParams = ({
       isNullable: !field.isRequired,
     };
     const decorators: IDecorators = {};
+
+    if (
+      templateHelpers.config.outputType === 'interface' &&
+      isAnnotatedWith(field, /@Exclude/)
+    )
+      return result;
 
     if (isAnnotatedWith(field, DTO_ENTITY_HIDDEN)) return result;
 
@@ -163,6 +173,17 @@ export const computeEntityParams = ({
       overrides.isNullable = !isAnyRelationRequired;
     }
 
+    if (templateHelpers.config.classTransformer) {
+      decorators.classTransformers = parseClassTransformers({
+        ...field,
+      });
+      concatUniqueIntoArray(
+        decorators.classTransformers,
+        classTransformers,
+        'name',
+      );
+    }
+
     if (!templateHelpers.config.noDependencies) {
       if (isAnnotatedWith(field, DTO_API_HIDDEN)) {
         decorators.apiHideProperty = true;
@@ -198,6 +219,13 @@ export const computeEntityParams = ({
 
     return [...result, mapDMMFToParsedField(field, overrides, decorators)];
   }, [] as ParsedField[]);
+
+  if (classTransformers.length) {
+    imports.unshift({
+      from: 'class-transformer',
+      destruct: classTransformers.map((v) => v.name).sort(),
+    });
+  }
 
   const importPrismaClient = makeImportsFromPrismaClient(
     fields,

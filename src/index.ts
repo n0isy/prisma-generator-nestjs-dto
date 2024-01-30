@@ -80,6 +80,12 @@ export const generate = async (options: GeneratorOptions) => {
     false,
   );
 
+  const classTransformer = stringToBoolean(
+    options.generator.config.classTransformer,
+    // using `true` as default value would be a breaking change
+    false,
+  );
+
   const supportedOutputTypes = ['class', 'interface'];
   if (!supportedOutputTypes.includes(outputType)) {
     throw new Error(
@@ -93,15 +99,15 @@ export const generate = async (options: GeneratorOptions) => {
     false,
   );
 
-  if (classValidation && outputType !== 'class') {
+  if ((classValidation || classTransformer) && outputType !== 'class') {
     throw new Error(
-      `To use 'validation' validation decorators, 'outputType' must be 'class'.`,
+      `To use 'validation/transformer' validation decorators, 'outputType' must be 'class'.`,
     );
   }
 
-  if (classValidation && noDependencies) {
+  if ((classValidation || classTransformer) && noDependencies) {
     throw new Error(
-      `To use 'validation' validation decorators, 'noDependencies' cannot be false.`,
+      `To use 'validation/transformer' validation decorators, 'noDependencies' cannot be false.`,
     );
   }
 
@@ -158,6 +164,7 @@ export const generate = async (options: GeneratorOptions) => {
     entitySuffix,
     fileNamingStyle,
     classValidation,
+    classTransformer,
     outputType,
     noDependencies,
     definiteAssignmentAssertion,

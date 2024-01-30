@@ -21,9 +21,31 @@ generator nestjsDto {
   entitySuffix                    = "Entity"
   fileNamingStyle                 = "camel"
   classValidation                 = "true"
+  classTransformer                = "true"
   noDependencies                  = "false"
   outputType                      = "class"
   definiteAssignmentAssertion     = "true"
+  prettier                        = "true"
+}
+
+generator frontEndDto {
+  provider                        = "node -r ts-node/register/transpile-only src/cli.ts"
+  output                          = "../src/@generatedFrontEnd/prisma-generator-nestjs-dto"
+  outputToNestJsResourceStructure = "true"
+  flatResourceStructure           = "true"
+  exportRelationModifierClasses   = "true"
+  reExport                        = "true"
+  createDtoPrefix                 = "Create"
+  updateDtoPrefix                 = "Update"
+  dtoSuffix                       = "Dto"
+  entityPrefix                    = ""
+  entitySuffix                    = "Entity"
+  fileNamingStyle                 = "camel"
+  classValidation                 = "false"
+  classTransformer                = "false"
+  noDependencies                  = "true"
+  outputType                      = "interface"
+  definiteAssignmentAssertion     = "false"
   prettier                        = "true"
 }
 

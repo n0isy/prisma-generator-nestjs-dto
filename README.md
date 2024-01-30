@@ -20,6 +20,7 @@ This is a fork of [@vegardit/prisma-generator-nestjs-dto](https://github.com/veg
 
 * enhance fields with additional schema information, e.g., description, to generate a `@ApiProperty()` decorator (see [Schema Object annotations](#schema-object-annotations))
 * optionally add [validation decorators](#validation-decorators)
+* optionally add [transformer decorators](#transformer-decorators)
 * support for composite types
 * control output format with additional flags `flatResourceStructure`, `noDependencies`, and `outputType`
 * optionally auto-format output with prettier
@@ -50,6 +51,7 @@ generator nestjsDto {
   entityPrefix                    = ""
   entitySuffix                    = ""
   classValidation                 = "false"
+  classTransformer                = "false"
   fileNamingStyle                 = "camel"
   noDependencies                  = "false"
   outputType                      = "class"
@@ -77,6 +79,7 @@ All parameters are optional.
 | `entitySuffix = ""`                                              | phrase to suffix every `Entity` class with                                                                                                                                                                           |
 | `fileNamingStyle = "camel"`                                      | How to name generated files. Valid choices are `"camel"`, `"pascal"`, `"kebab"` and `"snake"`.                                                                                                                       |
 | `classValidation = "false"`                                      | Add validation decorators from `class-validator`. Not compatible with `noDependencies = "true"` and `outputType = "interface"`.                                                                                      |
+| `classTransformer = "false"`                                     | Add decorators from `class-transformer`. Not compatible with `noDependencies = "true"` and `outputType = "interface"`.                                                                                      |
 | `noDependencies = "false"`                                       | Any imports and decorators that are specific to NestJS and Prisma are omitted, such that there are no references to external dependencies. This is useful if you want to generate appropriate DTOs for the frontend. |
 | `outputType = "class"`                                           | Output the DTOs as `class` or as `interface`. `interface` should only be used to generate DTOs for the frontend.                                                                                                     |
 | `definiteAssignmentAssertion = "false"`                          | Add a definite assignment assertion operator `!` to required fields, which is required if `strict` and/or `strictPropertyInitialization` is set `true` in your tsconfig.json's `compilerOptions`.                    |
@@ -355,6 +358,38 @@ export class Question {
 ```
 
 </details>
+
+### Transformer decorators
+
+If `classTransformer = "true"`, the generator will add decorators from [class-transformer](https://github.com/typestack/class-transformer) to `Entity` and `Plain DTO`.
+Regardless of this setting, a field decorated with `@Exclude()` is automatically removed when `outputType = "interface"`. 
+
+Following decorators are supported:
+
+* `Exclude`
+* `Expose`
+* `Type`
+* `Transform`
+
+#### Example
+
+Prisma Schema
+
+```prisma
+/// @Exclude()
+password    String
+/// @Type(() => Date)
+birthDate   DateTime
+```
+
+Generated output (`outputType = "class"`)
+
+```typescript
+@Exclude()
+password: string;
+@Type(() => Date)
+birthDate: Date;
+```
 
 ## Principles
 
