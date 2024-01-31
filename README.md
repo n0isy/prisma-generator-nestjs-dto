@@ -16,7 +16,7 @@ Generates `ConnectDTO`, `CreateDTO`, `UpdateDTO`, `DTO`, and `Entity` classes fo
 
 These classes can also be used with the built-in [ValidationPipe](https://docs.nestjs.com/techniques/validation#using-the-built-in-validationpipe) and [Serialization](https://docs.nestjs.com/techniques/serialization).
 
-This is a fork of [@vegardit/prisma-generator-nestjs-dto](https://github.com/vegardit/prisma-generator-nestjs-dto) and adds multiple features:
+This is a fork of [@Brakebein/prisma-generator-nestjs-dto](https://github.com/Brakebein/prisma-generator-nestjs-dto) and currently support the following features:
 
 * enhance fields with additional schema information, e.g., description, to generate a `@ApiProperty()` decorator (see [Schema Object annotations](#schema-object-annotations))
 * optionally add [validation decorators](#validation-decorators)
