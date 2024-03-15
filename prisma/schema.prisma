@@ -60,7 +60,7 @@ model Product {
   /// @description Project's name
   /// @example My first product
   name            String        @db.VarChar(255)
-  description     String        @db.VarChar(1024)
+  description     String?       @db.VarChar(1024)
   /// @maxItems 5
   images          Json[]        @db.Json
   highlighted     Boolean       @default(false)

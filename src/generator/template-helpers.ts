@@ -181,7 +181,12 @@ export const makeHelpers = ({
     fileName(name, undefined, '.entity', withExtension);
 
   const plainDtoFilename = (name: string, withExtension = false) =>
-    fileName(name, undefined, fileSuffix, withExtension);
+    fileName(
+      name,
+      outputType === 'class' ? undefined : 'plain-',
+      fileSuffix,
+      withExtension,
+    );
 
   const fieldType = (
     field: ParsedField,
@@ -228,7 +233,7 @@ export const makeHelpers = ({
       '?',
       when(definiteAssignmentAssertion, '!'),
     )}: ${fieldType(field, dtoType, useInputTypes)} ${when(
-      field.isNullable,
+      field.isNullable && dtoType === 'update',
       ' | ' +
         when(
           fieldType(field, dtoType, useInputTypes) === 'Prisma.InputJsonValue',
@@ -252,11 +257,11 @@ export const makeHelpers = ({
     )}`;
 
   const fieldToEntityProp = (field: ParsedField) =>
-    `${decorateApiProperty(field)}${decorateClassTransformers(field)}${field.name}${unless(
-      field.isRequired,
+    `${decorateApiProperty(field)}${decorateClassTransformers(field)}${field.name}${when(
+      field.isNullable,
       '?',
       when(definiteAssignmentAssertion, '!'),
-    )}: ${fieldType(field)} ${when(field.isNullable, ' | null')};`;
+    )}: ${fieldType(field)} ${when(false && field.isNullable, ' | null')};`;
 
   const fieldsToEntityProps = (fields: ParsedField[]) =>
     `${each(fields, (field) => fieldToEntityProp(field), joinSymbols)}`;
