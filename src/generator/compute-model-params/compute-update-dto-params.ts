@@ -131,7 +131,7 @@ export const computeUpdateDtoParams = ({
     if (!isDtoOptional) {
       if (isId(field)) return result;
       if (isUpdatedAt(field)) return result;
-      if (isRequiredWithDefaultValue(field)) return result;
+      // if (isRequiredWithDefaultValue(field)) return result;
     }
 
     if (isType(field)) {
