@@ -34,6 +34,10 @@ interface RunParam {
   definiteAssignmentAssertion: boolean;
   requiredResponseApiProperty: boolean;
   prismaClientImportPath: string;
+  updatedEnabled: boolean;
+  connectedEnabled: boolean;
+  entityEnabled: boolean;
+  createdEnabled: boolean;
 }
 
 export const run = ({
@@ -53,6 +57,10 @@ export const run = ({
     definiteAssignmentAssertion,
     requiredResponseApiProperty,
     prismaClientImportPath,
+    updatedEnabled,
+    connectedEnabled,
+    entityEnabled,
+    createdEnabled,
     ...preAndSuffixes
   } = options;
 
@@ -75,6 +83,10 @@ export const run = ({
     definiteAssignmentAssertion,
     prismaClientImportPath,
     requiredResponseApiProperty,
+    updatedEnabled,
+    connectedEnabled,
+    entityEnabled,
+    createdEnabled,
     ...preAndSuffixes,
   });
   const allModels = dmmf.datamodel.models;
@@ -122,7 +134,6 @@ export const run = ({
       allModels: filteredTypes,
       templateHelpers,
     });
-
     // generate create-model.dto.ts
     const createDto = {
       fileName: path.join(
@@ -165,6 +176,8 @@ export const run = ({
   });
 
   const modelFiles = filteredModels.map((model) => {
+    const models: any[] = [];
+
     logger(`Processing Model ${model.name}`);
 
     const modelParams = computeModelParams({
@@ -172,59 +185,68 @@ export const run = ({
       allModels: [...filteredTypes, ...filteredModels],
       templateHelpers,
     });
-
-    // generate connect-model.dto.ts
-    const connectDto = {
-      fileName: path.join(
-        model.output.dto,
-        templateHelpers.connectDtoFilename(model.name, true),
-      ),
-      content: generateConnectDto({
-        ...modelParams.connect,
-        exportRelationModifierClasses,
-        templateHelpers,
-      }),
-    };
-
-    // generate create-model.dto.ts
-    const createDto = {
-      fileName: path.join(
-        model.output.dto,
-        templateHelpers.createDtoFilename(model.name, true),
-      ),
-      content: generateCreateDto({
-        ...modelParams.create,
-        exportRelationModifierClasses,
-        templateHelpers,
-      }),
-    };
+    if (connectedEnabled) {
+      // generate connect-model.dto.ts
+      const connectDto = {
+        fileName: path.join(
+          model.output.dto,
+          templateHelpers.connectDtoFilename(model.name, true),
+        ),
+        content: generateConnectDto({
+          ...modelParams.connect,
+          exportRelationModifierClasses,
+          templateHelpers,
+        }),
+      };
+      models.push(connectDto);
+    }
+    if (createdEnabled) {
+      // generate create-model.dto.ts
+      const createDto = {
+        fileName: path.join(
+          model.output.dto,
+          templateHelpers.createDtoFilename(model.name, true),
+        ),
+        content: generateCreateDto({
+          ...modelParams.create,
+          exportRelationModifierClasses,
+          templateHelpers,
+        }),
+      };
+      models.push(createDto);
+    }
     // TODO generate create-model.struct.ts
+    if (updatedEnabled) {
+      // generate update-model.dto.ts
+      const updateDto = {
+        fileName: path.join(
+          model.output.dto,
+          templateHelpers.updateDtoFilename(model.name, true),
+        ),
+        content: generateUpdateDto({
+          ...modelParams.update,
+          exportRelationModifierClasses,
+          templateHelpers,
+        }),
+      };
+      models.push(updateDto);
+      // TODO generate update-model.struct.ts
+    }
 
-    // generate update-model.dto.ts
-    const updateDto = {
-      fileName: path.join(
-        model.output.dto,
-        templateHelpers.updateDtoFilename(model.name, true),
-      ),
-      content: generateUpdateDto({
-        ...modelParams.update,
-        exportRelationModifierClasses,
-        templateHelpers,
-      }),
-    };
-    // TODO generate update-model.struct.ts
-
-    // generate model.entity.ts
-    const entity = {
-      fileName: path.join(
-        model.output.entity,
-        templateHelpers.entityFilename(model.name, true),
-      ),
-      content: generateEntity({
-        ...modelParams.entity,
-        templateHelpers,
-      }),
-    };
+    if (entityEnabled) {
+      // generate model.entity.ts
+      const entity = {
+        fileName: path.join(
+          model.output.entity,
+          templateHelpers.entityFilename(model.name, true),
+        ),
+        content: generateEntity({
+          ...modelParams.entity,
+          templateHelpers,
+        }),
+      };
+      models.push(entity);
+    }
     // TODO generate model.struct.ts
 
     // generate model.dto.ts
@@ -239,7 +261,7 @@ export const run = ({
       }),
     };
 
-    return [connectDto, createDto, updateDto, entity, plainDto];
+    return [plainDto, ...models];
   });
 
   return [...typeFiles, ...modelFiles].flat();

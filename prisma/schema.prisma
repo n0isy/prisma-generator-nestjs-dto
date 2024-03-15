@@ -7,25 +7,50 @@ generator client {
   provider = "prisma-client-js"
 }
 
-generator nestjsDto {
+generator classes {
   provider                        = "node -r ts-node/register/transpile-only src/cli.ts"
-  output                          = "../src/@generated/prisma-generator-nestjs-dto"
+  output                          = "../src/@generated/_dto"
   outputToNestJsResourceStructure = "true"
   flatResourceStructure           = "true"
   exportRelationModifierClasses   = "true"
-  reExport                        = "true"
+  reExport                        = "false"
   createDtoPrefix                 = "Create"
   updateDtoPrefix                 = "Update"
   dtoSuffix                       = "Dto"
   entityPrefix                    = ""
   entitySuffix                    = "Entity"
-  fileNamingStyle                 = "camel"
   classValidation                 = "true"
   classTransformer                = "true"
+  fileNamingStyle                 = "camel"
   noDependencies                  = "false"
   outputType                      = "class"
-  definiteAssignmentAssertion     = "true"
+  definiteAssignmentAssertion     = "false"
+  requiredResponseApiProperty     = "true"
   prettier                        = "true"
+  connectedEnabled                = "false"
+}
+
+generator interfaces {
+  provider                        = "node -r ts-node/register/transpile-only src/cli.ts"
+  output                          = "../src/@generated/_interface"
+  outputToNestJsResourceStructure = "false"
+  flatResourceStructure           = "true"
+  exportRelationModifierClasses   = "false"
+  reExport                        = "false"
+  createDtoPrefix                 = "Create"
+  updateDtoPrefix                 = "Update"
+  dtoSuffix                       = "Interface"
+  entityPrefix                    = ""
+  entitySuffix                    = "Entity"
+  classValidation                 = "false"
+  classTransformer                = "false"
+  fileNamingStyle                 = "camel"
+  noDependencies                  = "true"
+  outputType                      = "interface"
+  definiteAssignmentAssertion     = "false"
+  requiredResponseApiProperty     = "false"
+  prettier                        = "true"
+  connectedEnabled                = "false"
 }
 
 model Product {

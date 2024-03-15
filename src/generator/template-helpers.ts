@@ -105,6 +105,10 @@ interface MakeHelpersParam {
   definiteAssignmentAssertion: boolean;
   requiredResponseApiProperty: boolean;
   prismaClientImportPath: string;
+  updatedEnabled: boolean;
+  connectedEnabled: boolean;
+  entityEnabled: boolean;
+  createdEnabled: boolean;
 }
 export const makeHelpers = ({
   connectDtoPrefix,
@@ -122,6 +126,10 @@ export const makeHelpers = ({
   definiteAssignmentAssertion,
   requiredResponseApiProperty,
   prismaClientImportPath,
+  updatedEnabled,
+  connectedEnabled,
+  entityEnabled,
+  createdEnabled,
 }: MakeHelpersParam) => {
   const className = (name: string, prefix = '', suffix = '') =>
     `${prefix}${transformClassNameCase(name)}${suffix}`;
@@ -135,6 +143,8 @@ export const makeHelpers = ({
       withExtension,
       '.ts',
     )}`;
+
+  const fileSuffix: string = outputType === 'class' ? '.dto' : '';
 
   const entityName = (name: string) =>
     new RegExp(`${dtoSuffix || 'dto'}$`, 'i').test(name)
@@ -159,19 +169,19 @@ export const makeHelpers = ({
   };
 
   const connectDtoFilename = (name: string, withExtension = false) =>
-    fileName(name, 'connect-', '.dto', withExtension);
+    fileName(name, 'connect-', fileSuffix, withExtension);
 
   const createDtoFilename = (name: string, withExtension = false) =>
-    fileName(name, 'create-', '.dto', withExtension);
+    fileName(name, 'create-', fileSuffix, withExtension);
 
   const updateDtoFilename = (name: string, withExtension = false) =>
-    fileName(name, 'update-', '.dto', withExtension);
+    fileName(name, 'update-', fileSuffix, withExtension);
 
   const entityFilename = (name: string, withExtension = false) =>
     fileName(name, undefined, '.entity', withExtension);
 
   const plainDtoFilename = (name: string, withExtension = false) =>
-    fileName(name, undefined, '.dto', withExtension);
+    fileName(name, undefined, fileSuffix, withExtension);
 
   const fieldType = (
     field: ParsedField,
@@ -267,6 +277,10 @@ export const makeHelpers = ({
       definiteAssignmentAssertion,
       requiredResponseApiProperty,
       prismaClientImportPath,
+      updatedEnabled,
+      connectedEnabled,
+      entityEnabled,
+      createdEnabled,
     },
     apiExtraModels,
     entityName,

@@ -87,6 +87,9 @@ export const computeUpdateDtoParams = ({
       if (!isAnnotatedWithOneOf(field, DTO_RELATION_MODIFIERS_ON_UPDATE)) {
         return result;
       }
+      if (!templateHelpers.config.connectedEnabled) {
+        return result;
+      }
       const relationInputType = generateRelationInput({
         field,
         model,

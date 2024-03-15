@@ -39,6 +39,26 @@ export const generate = async (options: GeneratorOptions) => {
     outputType = 'class',
   } = options.generator.config;
 
+  const entityEnabled = stringToBoolean(
+    options.generator.config.entityEnabled,
+    false,
+  );
+
+  const connectedEnabled = stringToBoolean(
+    options.generator.config.connectedEnabled,
+    false,
+  );
+
+  const updatedEnabled = stringToBoolean(
+    options.generator.config.updatedEnabled,
+    true,
+  );
+
+  const createdEnabled = stringToBoolean(
+    options.generator.config.createdEnabled,
+    true,
+  );
+
   const exportRelationModifierClasses = stringToBoolean(
     options.generator.config.exportRelationModifierClasses,
     true,
@@ -170,6 +190,10 @@ export const generate = async (options: GeneratorOptions) => {
     definiteAssignmentAssertion,
     requiredResponseApiProperty,
     prismaClientImportPath,
+    entityEnabled,
+    updatedEnabled,
+    connectedEnabled,
+    createdEnabled,
   });
 
   const indexCollections: Record<string, WriteableFileSpecs> = {};

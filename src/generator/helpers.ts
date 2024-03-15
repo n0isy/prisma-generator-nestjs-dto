@@ -244,11 +244,14 @@ export const generateRelationInput = ({
   const generatedClasses: string[] = [];
   const classValidators: IClassValidator[] = [];
 
-  const createRelation = isAnnotatedWith(field, canCreateAnnotation);
-  const connectRelation = isAnnotatedWith(field, canConnectAnnotation);
-  const disconnectRelation = canDisconnectAnnotation
-    ? isAnnotatedWith(field, canDisconnectAnnotation)
-    : undefined;
+  const createRelation =
+    t.config.createdEnabled && isAnnotatedWith(field, canCreateAnnotation);
+  const connectRelation =
+    t.config.connectedEnabled && isAnnotatedWith(field, canConnectAnnotation);
+  const disconnectRelation =
+    t.config.connectedEnabled && canDisconnectAnnotation
+      ? isAnnotatedWith(field, canDisconnectAnnotation)
+      : undefined;
   // should the validation require the relation field to exist
   // this should only be true in cases where only one relation field is generated
   // for multiple relaiton fields, e.g. create AND connect, each should be optional
