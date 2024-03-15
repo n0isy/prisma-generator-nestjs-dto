@@ -237,6 +237,8 @@ export const makeHelpers = ({
         ),
     )};`;
 
+  const joinSymbols: string = outputType === 'class' ? '\n\n' : '\n';
+
   const fieldsToDtoProps = (
     fields: ParsedField[],
     dtoType: 'create' | 'update' | 'plain',
@@ -246,7 +248,7 @@ export const makeHelpers = ({
     `${each(
       fields,
       (field) => fieldToDtoProp(field, dtoType, useInputTypes, forceOptional),
-      '\n',
+      joinSymbols,
     )}`;
 
   const fieldToEntityProp = (field: ParsedField) =>
@@ -257,7 +259,7 @@ export const makeHelpers = ({
     )}: ${fieldType(field)} ${when(field.isNullable, ' | null')};`;
 
   const fieldsToEntityProps = (fields: ParsedField[]) =>
-    `${each(fields, (field) => fieldToEntityProp(field), '\n')}`;
+    `${each(fields, (field) => fieldToEntityProp(field), joinSymbols)}`;
 
   const apiExtraModels = (names: string[]) =>
     `@ApiExtraModels(${names.map(entityName)})`;
