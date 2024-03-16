@@ -75,10 +75,11 @@ export const computeUpdateDtoParams = ({
     };
     const decorators: IDecorators = {};
 
-    if (
-      isAnnotatedWith(field, DTO_RELATION_INCLUDE_ID) &&
-      relationScalarFieldNames.includes(name)
-    )
+    const includeId: boolean =
+      isAnnotatedWith(field, DTO_RELATION_INCLUDE_ID) ||
+      !templateHelpers.config.connectedEnabled;
+
+    if (includeId && relationScalarFieldNames.includes(name))
       field.isReadOnly = false;
 
     if (isReadOnly(field)) return result;
@@ -113,11 +114,7 @@ export const computeUpdateDtoParams = ({
       );
     }
 
-    if (
-      !isAnnotatedWith(field, DTO_RELATION_INCLUDE_ID) &&
-      relationScalarFieldNames.includes(name)
-    )
-      return result;
+    if (!includeId && relationScalarFieldNames.includes(name)) return result;
 
     // fields annotated with @DtoReadOnly are filtered out before this
     // so this safely allows to mark fields that are required in Prisma Schema

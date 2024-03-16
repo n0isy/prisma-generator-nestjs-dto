@@ -65,11 +65,12 @@ export const computePlainDtoParams = ({
     if (isAnnotatedWith(field, DTO_ENTITY_HIDDEN)) return result;
 
     if (isRelation(field)) return result;
-    if (
-      !isAnnotatedWith(field, DTO_RELATION_INCLUDE_ID) &&
-      relationScalarFieldNames.includes(name)
-    )
-      return result;
+
+    const includeId: boolean =
+      isAnnotatedWith(field, DTO_RELATION_INCLUDE_ID) ||
+      !templateHelpers.config.connectedEnabled;
+
+    if (!includeId && relationScalarFieldNames.includes(name)) return result;
 
     if (isType(field)) {
       // don't try to import the class we're preparing params for
