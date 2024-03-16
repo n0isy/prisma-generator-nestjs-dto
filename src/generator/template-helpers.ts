@@ -109,6 +109,8 @@ interface MakeHelpersParam {
   connectedEnabled: boolean;
   entityEnabled: boolean;
   createdEnabled: boolean;
+  alwaysHidden: string[];
+  alwaysReadonly: string[];
 }
 export const makeHelpers = ({
   connectDtoPrefix,
@@ -130,6 +132,8 @@ export const makeHelpers = ({
   connectedEnabled,
   entityEnabled,
   createdEnabled,
+  alwaysHidden,
+  alwaysReadonly,
 }: MakeHelpersParam) => {
   const className = (name: string, prefix = '', suffix = '') =>
     `${prefix}${transformClassNameCase(name)}${suffix}`;
@@ -288,6 +292,8 @@ export const makeHelpers = ({
       connectedEnabled,
       entityEnabled,
       createdEnabled,
+      alwaysHidden,
+      alwaysReadonly,
     },
     apiExtraModels,
     entityName,

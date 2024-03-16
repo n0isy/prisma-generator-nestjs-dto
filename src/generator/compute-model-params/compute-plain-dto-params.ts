@@ -63,7 +63,7 @@ export const computePlainDtoParams = ({
       return result;
 
     if (isAnnotatedWith(field, DTO_ENTITY_HIDDEN)) return result;
-
+    if (templateHelpers.config.alwaysHidden.includes(field.name)) return result;
     if (isRelation(field)) return result;
 
     const includeId: boolean =

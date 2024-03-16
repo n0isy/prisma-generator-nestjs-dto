@@ -21,6 +21,13 @@ const stringToBoolean = (input: string, defaultValue = false) => {
   return defaultValue;
 };
 
+const stringToArray = (input: string): string[] => {
+  if (input.length == 0) {
+    return [];
+  }
+  return input.split(',');
+};
+
 export const generate = async (options: GeneratorOptions) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const output = parseEnvValue(options.generator.output!);
@@ -38,6 +45,14 @@ export const generate = async (options: GeneratorOptions) => {
     fileNamingStyle = 'camel',
     outputType = 'class',
   } = options.generator.config;
+
+  const alwaysHidden: string[] = stringToArray(
+    options.generator.config.alwaysHidden ?? '',
+  );
+
+  const alwaysReadonly: string[] = stringToArray(
+    options.generator.config.alwaysReadonly ?? '',
+  );
 
   const entityEnabled = stringToBoolean(
     options.generator.config.entityEnabled,
@@ -194,6 +209,8 @@ export const generate = async (options: GeneratorOptions) => {
     updatedEnabled,
     connectedEnabled,
     createdEnabled,
+    alwaysHidden,
+    alwaysReadonly,
   });
 
   const indexCollections: Record<string, WriteableFileSpecs> = {};

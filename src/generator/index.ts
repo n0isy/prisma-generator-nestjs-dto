@@ -38,6 +38,8 @@ interface RunParam {
   connectedEnabled: boolean;
   entityEnabled: boolean;
   createdEnabled: boolean;
+  alwaysHidden: string[];
+  alwaysReadonly: string[];
 }
 
 export const run = ({
@@ -61,6 +63,8 @@ export const run = ({
     connectedEnabled,
     entityEnabled,
     createdEnabled,
+    alwaysHidden,
+    alwaysReadonly,
     ...preAndSuffixes
   } = options;
 
@@ -87,6 +91,8 @@ export const run = ({
     connectedEnabled,
     entityEnabled,
     createdEnabled,
+    alwaysHidden,
+    alwaysReadonly,
     ...preAndSuffixes,
   });
   const allModels = dmmf.datamodel.models;

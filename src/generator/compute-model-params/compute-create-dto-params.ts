@@ -78,9 +78,12 @@ export const computeCreateDtoParams = ({
     if (includeId && relationScalarFieldNames.includes(name))
       field.isReadOnly = false;
 
+    if (templateHelpers.config.alwaysReadonly.includes(field.name))
+      return result;
+    if (templateHelpers.config.alwaysHidden.includes(field.name)) return result;
     if (isReadOnly(field)) return result;
     if (isAnnotatedWith(field, DTO_CREATE_HIDDEN)) return result;
-    if (isRelation(field) && templateHelpers.config.connectedEnabled) {
+    if (isRelation(field)) {
       if (!isAnnotatedWithOneOf(field, DTO_RELATION_MODIFIERS_ON_CREATE)) {
         return result;
       }
