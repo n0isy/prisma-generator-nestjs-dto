@@ -83,11 +83,8 @@ export const computeUpdateDtoParams = ({
 
     if (isReadOnly(field)) return result;
     if (isAnnotatedWith(field, DTO_UPDATE_HIDDEN)) return result;
-    if (isRelation(field)) {
+    if (isRelation(field) && templateHelpers.config.connectedEnabled) {
       if (!isAnnotatedWithOneOf(field, DTO_RELATION_MODIFIERS_ON_UPDATE)) {
-        return result;
-      }
-      if (!templateHelpers.config.connectedEnabled) {
         return result;
       }
       const relationInputType = generateRelationInput({
