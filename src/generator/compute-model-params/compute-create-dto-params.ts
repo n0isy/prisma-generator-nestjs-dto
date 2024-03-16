@@ -84,7 +84,10 @@ export const computeCreateDtoParams = ({
     if (isReadOnly(field)) return result;
     if (isAnnotatedWith(field, DTO_CREATE_HIDDEN)) return result;
     if (isRelation(field)) {
-      if (!isAnnotatedWithOneOf(field, DTO_RELATION_MODIFIERS_ON_CREATE)) {
+      if (
+        !isAnnotatedWithOneOf(field, DTO_RELATION_MODIFIERS_ON_CREATE) ||
+        !templateHelpers.config.connectedEnabled
+      ) {
         return result;
       }
       const relationInputType = generateRelationInput({
