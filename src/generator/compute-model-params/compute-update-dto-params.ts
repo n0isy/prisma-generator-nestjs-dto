@@ -260,7 +260,7 @@ export const computeUpdateDtoParams = ({
 
   const importPrismaClient = makeImportsFromPrismaClient(
     fields,
-    templateHelpers.config.prismaClientImportPath,
+    templateHelpers.config,
   );
 
   const importNestjsSwagger = makeImportsFromNestjsSwagger(

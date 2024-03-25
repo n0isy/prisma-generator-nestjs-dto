@@ -161,7 +161,7 @@ export const computeConnectDtoParams = ({
 
   const importPrismaClient = makeImportsFromPrismaClient(
     fields,
-    templateHelpers.config.prismaClientImportPath,
+    templateHelpers.config,
   );
 
   const importNestjsSwagger = makeImportsFromNestjsSwagger(

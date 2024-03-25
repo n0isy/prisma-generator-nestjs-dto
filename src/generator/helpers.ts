@@ -45,7 +45,7 @@ export function concatUniqueIntoArray<T = any>(
 
 export const makeImportsFromPrismaClient = (
   fields: ParsedField[],
-  prismaClientImportPath: string,
+  { prismaClientImportPath, noDependencies }: TemplateHelpers['config'],
 ): ImportStatementParams[] => {
   const enumsToImport = uniq(
     fields.filter(({ kind }) => kind === 'enum').map(({ type }) => type),
@@ -62,7 +62,7 @@ export const makeImportsFromPrismaClient = (
     enumsToImport.length || importPrisma
       ? [
           {
-            from: prismaClientImportPath,
+            from: noDependencies ? './enums' : prismaClientImportPath,
             destruct: importPrisma
               ? ['Prisma', ...enumsToImport]
               : enumsToImport,
@@ -583,10 +583,7 @@ export const generateUniqueInput = ({
 
   apiExtraModels.push(preAndPostfixedInputClassName);
 
-  const importPrismaClient = makeImportsFromPrismaClient(
-    fields,
-    t.config.prismaClientImportPath,
-  );
+  const importPrismaClient = makeImportsFromPrismaClient(fields, t.config);
 
   return {
     type: preAndPostfixedInputClassName,

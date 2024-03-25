@@ -2,6 +2,7 @@ import path from 'node:path';
 import { camel, pascal, kebab, snake } from 'case';
 import { DMMF } from '@prisma/generator-helper';
 import { logger } from '../utils';
+import { generateEnums } from './generate-enums';
 import { makeHelpers } from './template-helpers';
 import { computeModelParams } from './compute-model-params';
 import { computeTypeParams } from './compute-type-params';
@@ -270,5 +271,15 @@ export const run = ({
     return [plainDto, ...models];
   });
 
-  return [...typeFiles, ...modelFiles].flat();
+  const enums: DMMF.DatamodelEnum[] = dmmf.datamodel.enums;
+
+  const enumFiles: any[] = [];
+  if (enums.length > 0 && noDependencies) {
+    enumFiles.push({
+      fileName: path.join(output, 'enums.ts'),
+      content: generateEnums({ enums, templateHelpers }),
+    });
+  }
+
+  return [...typeFiles, ...modelFiles, ...enumFiles].flat();
 };
