@@ -12,8 +12,7 @@ export const generateEnums = ({
 ${t.each(
   enums,
   (content) => `export enum ${content.name} {
-${t.each(content.values, (value) => `  ${value.name} = '${value.name}'`, ',\n')}`,
+${t.each(content.values, (value) => `  ${value.name} = '${value.name}'`, ',\n')}}`,
   '\n\n',
 )}
-}
 `;
